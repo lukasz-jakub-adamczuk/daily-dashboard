@@ -23,9 +23,17 @@
             <p>{$twe}</p>
         {/foreach}
 
+        <h2>Next Week events</h2>
+        <p>From: <strong>{$nextWeek.from}</strong> to <strong>{$nextWeek.to}</strong></p>
+        {foreach from=$nextWeekEvents item=nwe}
+            <p>{$nwe}</p>
+        {/foreach}
+
         <h2>Last Week events</h2>
         <p>From: <strong>{$lastWeek.from}</strong> to <strong>{$lastWeek.to}</strong></p>
-        _last_week_events_
+        {foreach from=$lastWeekEvents item=lwe}
+            <p>{$lwe}</p>
+        {/foreach}
     </div>
 </body>
 </html>

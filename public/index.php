@@ -38,18 +38,60 @@ $today = date('Y-m-d');
 
 $todayInfo = getdate();
 
+$thisWeek = getWeekFrame();
+
+
+$dateTime = new DateTime($thisWeek['from']);
+
+$dateTime->sub(new DateInterval('P1D'));
+
+$lastWeek = getWeekFrame($dateTime->format('Y-m-d'));
+
+
+$dateTime = new DateTime($thisWeek['to']);
+
+$dateTime->add(new DateInterval('P1D'));
+
+$nextWeek = getWeekFrame($dateTime->format('Y-m-d'));
+
+
+// $smarty->assign('lastWeek', $lastWeek);
+// var_dump($week);
+// $smarty->assign('thisWeek', $week);
+
+// print_r($week);
+
+// echo strtotime($week['from']);
+
+// print_r(date_parse('january'));
+
 $thisWeekEvents = [];
+$lastWeekEvents = [];
+$nextWeekEvents = [];
 
 foreach ($allEvents as $mk => $month) {
     if (is_array($month)) {
         foreach ($month as $dk => $day) {
-            // print_r($day);
+            
             // if (strtolower($mk) == $todayInfo['month']) {
                 // foreach ($month as $day) {
                     // echo $day;
-            echo substr($today, 8, 2);
+            // echo substr($today, 8, 2);
+
             foreach ($day as $ek => $event) {
-                $thisWeekEvents[] = $event . '<span> (' . $dk . ')</span>';
+                $date = date('Y').'-'.monthNameToMonthNumber($mk).'-'.dateNumberFormat($dk);
+                // echo $dk.',';
+                // echo strtotime($date).':'.strtotime($week['from']).':'.strtotime($week['to']).',';
+                if (strtotime($date) >= strtotime($thisWeek['from']) && strtotime($date) <= strtotime($thisWeek['to'])) {
+                    $thisWeekEvents[] = $event . '<span> (' . $dk . ')</span>';
+                }
+                if (strtotime($date) >= strtotime($lastWeek['from']) && strtotime($date) <= strtotime($lastWeek['to'])) {
+                    $lastWeekEvents[] = $event . '<span> (' . $dk . ')</span>';
+                }
+                if (strtotime($date) >= strtotime($nextWeek['from']) && strtotime($date) <= strtotime($nextWeek['to'])) {
+                    $nextWeekEvents[] = $event . '<span> (' . $dk . ')</span>';
+                }
+                
                 if ($dk == substr($today, 8, 2)) {
                     $todayEvents[] = $event . '<span> (' . $dk . ')</span>';
                 }
@@ -61,10 +103,16 @@ foreach ($allEvents as $mk => $month) {
 // print_r($thisWeekEvents);
 $smarty->assign('today', $today);
 
+$smarty->assign('thisWeek', $thisWeek);
+$smarty->assign('lastWeek', $lastWeek);
+$smarty->assign('nextWeek', $nextWeek);
+
 $smarty->assign('todayEvents', $todayEvents);
 $smarty->assign('thisWeekEvents', $thisWeekEvents);
+$smarty->assign('lastWeekEvents', $lastWeekEvents);
+$smarty->assign('nextWeekEvents', $nextWeekEvents);
 
-$thisWeek = [];
+// $thisWeek = [];
 
 $today = new DateTime();
 
@@ -118,25 +166,18 @@ function getWeekFrame($date = null) {
     return $weekFrame;
 }
 
+function dateNumberFormat($dateNumber) {
+    return $dateNumber < 10 ? '0'.$dateNumber : $dateNumber;
+}
+
+function monthNameToMonthNumber($monthName) {
+    $date = date_parse($monthName);
+    return dateNumberFormat($date['month']);
+}
+
 // print_r(getWeekFrame());
 
-$week = getWeekFrame();
 
-// var_dump($week);
-$smarty->assign('thisWeek', $week);
-// a
-
-// echo $week['from'];
-$dateTime = new DateTime($week['from']);
-
-$dateTime->sub(new DateInterval('P1D'));
-    // $weekFrame['from'] = ;
-// echo strtotime($week['from']);
-    // echo $dateTime->format('Y-m-d');
-
-$week = getWeekFrame($dateTime->format('Y-m-d'));
-
-$smarty->assign('lastWeek', $week);
 
 // var_dump($week);
 // 
